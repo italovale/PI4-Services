@@ -84,16 +84,12 @@ and
 				questao.setTextoQuestao(rs.getString("textoQuestao"));
 				questao.setCodTipoQuestao(rs.getString("codTipoQuestao"));
 				
-				if(questao.getCodTipoQuestao().equalsIgnoreCase("A"))
+				if(questao.getCodTipoQuestao().equalsIgnoreCase("A") || questao.getCodTipoQuestao().equalsIgnoreCase("V"))
 				{
 					Alternativa alter = new Alternativa();
 					alter.setCodAlternativa(rs.getInt("codAlternativa"));
 					alter.setTextoAlternativa(rs.getString("textoAlternativa"));
 					a.add(alter);
-				}
-				else if(questao.getCodTipoQuestao().equalsIgnoreCase("V"))
-				{
-					
 				}
 				
 			}
