@@ -49,27 +49,6 @@ public class QuestaoServices {
 		try {
 			conn = DatabaseUtil.get().conn();
 
-/*
-select 
-	q.codQuestao, q.textoQuestao, q.codTipoQuestao,
-	qe.tempo,
-	a.codAlternativa, a.textoAlternativa  
-from 
-	questao q
-inner join 
-	QuestaoEvento qe
-on q.codQuestao = qe.codQuestao
-left join 
-	Alternativa a
-on q.codQuestao = a.codQuestao
-where 
-	ativo = 1
-and 
-	codstatus = 'E' --ou 'A'
-and 
-	codevento = 1
- */	
-
 			psta = conn.prepareStatement("select q.codQuestao, q.textoQuestao, q.codTipoQuestao, qe.tempo, a.codAlternativa, a.textoAlternativa from	questao q inner join QuestaoEvento qe on q.codQuestao = qe.codQuestao left join	Alternativa a on q.codQuestao = a.codQuestao where	ativo = 1 and codstatus = 'C' and codevento = ?");
 			psta.setInt(1, eventoId);
 			

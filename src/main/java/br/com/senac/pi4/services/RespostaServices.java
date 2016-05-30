@@ -3,27 +3,28 @@ package br.com.senac.pi4.services;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+
+
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.FormParam;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import br.com.senac.pi4.util.DatabaseUtil;
 
-@Path("/resposta")
+@Path("/resposta/{idGrupo}/{idQuestao}/{idAlternativa}/{idQuestao}")
 public class RespostaServices {
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response login(@FormParam("idGrupo") Integer idGrupo, @FormParam("idQuestao") Integer idQuestao, @FormParam("idAlternativa") Integer idAlternativa, @FormParam("idQuestao") String textoQuestao) {
+	public Response login(@PathParam("idGrupo") Integer idGrupo, @PathParam("idQuestao") Integer idQuestao, @PathParam("idAlternativa") Integer idAlternativa, @PathParam("idQuestao") String textoQuestao) {
 		Boolean status = null;
 		
 		try {
-			//usuarioLogado = Logar(email, senha);
 			status = gravarResposta(idGrupo, idQuestao, idAlternativa, textoQuestao);
 		} catch (Exception e) {
 			return Response.status(500).entity(null).build();	
@@ -44,7 +45,40 @@ public class RespostaServices {
 		
 		try {
 			conn = DatabaseUtil.get().conn();		
-			//ISERT
+			//selecionar questao correta
+			psta = conn.prepareStatement("select codAlternativa, textoAlternativa from Alternativa where codQuestao = ? and correta = ?");
+			psta.setInt(1, idQuestao);
+			psta.setInt(2, 1);// resposta correta sempre 1
+			
+			Integer codAlternativa = 0;
+			String textoAlternativa = "";
+			
+			ResultSet rs = psta.executeQuery();
+			
+			while (rs.next()) {
+				codAlternativa = rs.getInt("codAlternativa");
+				textoAlternativa = rs.getString("nmParticipante");
+			}
+			
+			//verifica se é a correta
+			Boolean correta;
+			if(codAlternativa == idAlternativa && textoAlternativa.equalsIgnoreCase(textoQuestao))
+			{
+				correta = true;
+			}
+			else
+			{
+				correta = false;
+			}
+			
+			//grava no banco a questao
+			PreparedStatement stmt = conn.prepareStatement("insert into questaoGrupo(codQuestao, codAlternativa, codGrupo, TextoResp, Correta) values(?, ?, ?, ?, ?)");
+			stmt.setInt(1, idQuestao);
+		    stmt.setInt(2, idAlternativa);
+		    stmt.setInt(3, idGrupo);
+		    stmt.setString(4, textoQuestao);
+		    stmt.setBoolean(5, correta);
+	        rowChange = stmt.executeUpdate();
 			
 			if(rowChange > 0)
 			{

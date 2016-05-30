@@ -28,8 +28,7 @@ public class ParticipanteServices {
 	public Response login(@PathParam("email") String email, @PathParam("senha") String senha) {
 		Participante usuarioLogado = null;
 		try {
-			//usuarioLogado = Logar(email, senha);
-			usuarioLogado = SemBAco();
+			usuarioLogado = Logar(email, senha);
 		} catch (Exception e) {
 			return Response.status(500).entity(null).build();	
 		}
@@ -47,7 +46,7 @@ public class ParticipanteServices {
 		PreparedStatement psta = null;
 		try {
 			conn = DatabaseUtil.get().conn();		
-			psta = conn.prepareStatement("select * from Participante where email = ? and senha = HASHBYTES(SHA1, convert(varchar, ?)) and ativo = 1");
+			psta = conn.prepareStatement("select * from Participante where email = ? and senha = HASHBYTES('SHA1', convert(varchar, ?)) and ativo = 1");
 			psta.setString(1, email);
 			psta.setString(2, senha);
 			
@@ -77,17 +76,5 @@ public class ParticipanteServices {
 		return usuario;
 	}
 	
-	public Participante SemBAco()
-	{
-		Participante u = new Participante();
-		u.setAtivo(true);
-		u.setEmail("italo@italo.com");
-		u.setNmParticipante("italo");
-		u.setCodCurso(1);
-		u.setCodParticipante(1);
-		
-		return u;
-		
-	}
 	
  }
