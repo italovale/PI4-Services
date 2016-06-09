@@ -49,7 +49,8 @@ public class QuestaoServices {
 		try {
 			conn = DatabaseUtil.get().conn();
 
-			psta = conn.prepareStatement("select q.codQuestao, q.textoQuestao, q.codTipoQuestao, qe.tempo, a.codAlternativa, a.textoAlternativa from	questao q inner join QuestaoEvento qe on q.codQuestao = qe.codQuestao left join	Alternativa a on q.codQuestao = a.codQuestao where	ativo = 1 and codstatus = 'C' and codevento = ?");
+			psta = conn.prepareStatement("select q.codQuestao, q.textoQuestao, q.codTipoQuestao, qe.tempo, a.codAlternativa, a.textoAlternativa from questao q inner join QuestaoEvento qe on q.codQuestao = qe.codQuestao left join	Alternativa a on q.codQuestao = a.codQuestao where	ativo = 1 and codstatus = 'A' and codevento = ?");
+			//psta = conn.prepareStatement("select q.codQuestao, q.textoQuestao, q.codTipoQuestao, qe.tempo, a.codAlternativa, a.textoAlternativa from	questao q inner join QuestaoEvento qe on q.codQuestao = qe.codQuestao left join	Alternativa a on q.codQuestao = a.codQuestao where codstatus = 'A' and codevento = ?");
 			psta.setInt(1, eventoId);
 			
 			
@@ -63,7 +64,7 @@ public class QuestaoServices {
 				questao.setTextoQuestao(rs.getString("textoQuestao"));
 				questao.setCodTipoQuestao(rs.getString("codTipoQuestao"));
 				
-				if(questao.getCodTipoQuestao().equalsIgnoreCase("A") || questao.getCodTipoQuestao().equalsIgnoreCase("V"))
+				if(questao.getCodTipoQuestao().equalsIgnoreCase("A"))
 				{
 					Alternativa alter = new Alternativa();
 					alter.setCodAlternativa(rs.getInt("codAlternativa"));
