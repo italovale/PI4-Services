@@ -18,7 +18,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import br.com.senac.pi4.entity.Alternativa;
 import br.com.senac.pi4.entity.Resposta;
 import br.com.senac.pi4.util.DatabaseUtil;
 
