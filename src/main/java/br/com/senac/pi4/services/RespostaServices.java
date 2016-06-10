@@ -8,20 +8,26 @@ import java.sql.SQLException;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import br.com.senac.pi4.entity.Alternativa;
+import br.com.senac.pi4.entity.Resposta;
 import br.com.senac.pi4.util.DatabaseUtil;
 
-@Path("/resposta/{idGrupo}/{idQuestao}/{idAlternativa}/{idQuestao}")
+@Path("/resposta/{idGrupo}/{idQuestao}/{idAlternativa}/{textoQuestao}")
 public class RespostaServices {
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response login(@PathParam("idGrupo") Integer idGrupo, @PathParam("idQuestao") Integer idQuestao, @PathParam("idAlternativa") Integer idAlternativa, @PathParam("idQuestao") String textoQuestao) {
+	public Response login(@PathParam("idGrupo") Integer idGrupo, @PathParam("idQuestao") Integer idQuestao, @PathParam("idAlternativa") Integer idAlternativa, @PathParam("textoQuestao") String textoQuestao) {
 		Boolean status = null;
 		
 		try {
@@ -39,36 +45,60 @@ public class RespostaServices {
 	public Boolean gravarResposta(Integer idGrupo, Integer idQuestao, Integer idAlternativa, String textoQuestao) throws Exception {
 		
 		Boolean gravou = false;
+		Boolean respostaCorreta = false;
+		
 		int rowChange = 0;
 		Connection conn = null;
 		PreparedStatement psta = null;
+		List<Resposta> alternativas = new ArrayList<Resposta>();
 		
 		try {
 			conn = DatabaseUtil.get().conn();		
 			//selecionar questao correta
-			psta = conn.prepareStatement("select codAlternativa, textoAlternativa from Alternativa where codQuestao = ? and correta = ?");
+			psta = conn.prepareStatement("select 	a.codAlternativa, 	a.textoAlternativa,	a.correta,	q.codTipoQuestao from 	Alternativa	a inner join	questao q on a.codquestao = q.codquestao where 	a.codQuestao = 5");
 			psta.setInt(1, idQuestao);
-			psta.setInt(2, 1);// resposta correta sempre 1
-			
-			Integer codAlternativa = 0;
-			String textoAlternativa = "";
 			
 			ResultSet rs = psta.executeQuery();
 			
 			while (rs.next()) {
-				codAlternativa = rs.getInt("codAlternativa");
-				textoAlternativa = rs.getString("nmParticipante");
+				Resposta r = new Resposta();
+				r.setCodAlternativa(rs.getInt("codAlternativa"));
+				r.setTextoQuestao(rs.getString("textoAlternativa"));
+				r.setCorreta(rs.getBoolean("correta"));
+				r.setCodTipoQuestao(rs.getString("codTipoQuestao"));
+				
+				alternativas.add(r);
 			}
 			
-			//verifica se é a correta
-			Boolean correta;
-			if(codAlternativa == idAlternativa && textoAlternativa.equalsIgnoreCase(textoQuestao))
-			{
-				correta = true;
+			
+			//alternativa
+			if(alternativas.get(0).getCodTipoQuestao().equalsIgnoreCase("A")){
+				for (Resposta item : alternativas) {
+					if(item.getCodAlternativa() == idAlternativa)
+					{
+						respostaCorreta = true;
+					}
+				}
 			}
-			else
+			//texto
+			else if(alternativas.get(0).getCodTipoQuestao().equalsIgnoreCase("T"))
 			{
-				correta = false;
+				for (Resposta item : alternativas) {
+					if(item.getTextoQuestao().equalsIgnoreCase(textoQuestao))
+					{
+						respostaCorreta = true;
+					}
+				}
+			}
+			//booleana
+			else if(alternativas.get(0).getCodTipoQuestao().equalsIgnoreCase("V"))
+			{
+				for (Resposta item : alternativas) {
+					if(item.getCorreta() ==  Boolean.parseBoolean(textoQuestao))
+					{
+						respostaCorreta = true;
+					}
+				}
 			}
 			
 			//grava no banco a questao
@@ -77,7 +107,7 @@ public class RespostaServices {
 		    stmt.setInt(2, idAlternativa);
 		    stmt.setInt(3, idGrupo);
 		    stmt.setString(4, textoQuestao);
-		    stmt.setBoolean(5, correta);
+		    stmt.setBoolean(5, respostaCorreta);
 	        rowChange = stmt.executeUpdate();
 			
 			if(rowChange > 0)

@@ -22,15 +22,15 @@ import br.com.senac.pi4.util.DatabaseUtil;
 public class QuestaoServices {
 	
 	@GET
-	@Path("/{param}")
+	@Path("/{param}/{param2}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getEvento(@PathParam("param") Integer eventoId) {
+	public Response getEvento(@PathParam("param") Integer eventoId, @PathParam("param2") Integer grupoId) {
 	
 
 		Questao questao = new Questao();
 	
 		try {
-			questao = selectQuestaoAtiva(eventoId);
+			questao = selectQuestaoAtiva(eventoId, grupoId);
 		} catch (Exception e) {
 			return Response.status(500).entity(null).build();	
 		}
@@ -41,7 +41,7 @@ public class QuestaoServices {
 		return Response.status(200).entity(questao).build();
 	}
 	
-	public Questao selectQuestaoAtiva (int eventoId) throws Exception {
+	public Questao selectQuestaoAtiva (int eventoId, int grupoId) throws Exception {
 		Connection conn = null;
 		PreparedStatement psta = null;
 		Questao questao = new Questao();
@@ -49,8 +49,8 @@ public class QuestaoServices {
 		try {
 			conn = DatabaseUtil.get().conn();
 
-			psta = conn.prepareStatement("select q.codQuestao, q.textoQuestao, q.codTipoQuestao, qe.tempo, a.codAlternativa, a.textoAlternativa from questao q inner join QuestaoEvento qe on q.codQuestao = qe.codQuestao left join	Alternativa a on q.codQuestao = a.codQuestao where	ativo = 1 and codstatus = 'A' and codevento = ?");
-			//psta = conn.prepareStatement("select q.codQuestao, q.textoQuestao, q.codTipoQuestao, qe.tempo, a.codAlternativa, a.textoAlternativa from	questao q inner join QuestaoEvento qe on q.codQuestao = qe.codQuestao left join	Alternativa a on q.codQuestao = a.codQuestao where codstatus = 'A' and codevento = ?");
+			//psta = conn.prepareStatement("select q.codQuestao, q.textoQuestao, q.codTipoQuestao, qe.tempo, a.codAlternativa, a.textoAlternativa from questao q inner join QuestaoEvento qe on q.codQuestao = qe.codQuestao left join	Alternativa a on q.codQuestao = a.codQuestao where	ativo = 1 and codstatus = 'A' and codevento = ?");
+			psta = conn.prepareStatement("select q.codQuestao, q.textoQuestao, q.codTipoQuestao, qe.tempo, a.codAlternativa, a.textoAlternativa from	questao q inner join QuestaoEvento qe on q.codQuestao = qe.codQuestao left join	Alternativa a on q.codQuestao = a.codQuestao where codstatus = 'A' and codevento = ?");
 			psta.setInt(1, eventoId);
 			
 			
@@ -78,6 +78,20 @@ public class QuestaoServices {
 			{
 				questao.setAlternativas(a);
 			}
+			
+			
+			//verifica se a questao ja foi respondida pelo grupo
+			PreparedStatement psta2 = null;
+			psta2 = conn.prepareStatement("select * from questaoGrupo where codQuestao = ? and codGrupo = ?");
+			psta2.setInt(1, questao.getCodQuestao());
+			psta2.setInt(2, grupoId);
+			
+			rs = psta2.executeQuery();
+			if(rs.getRow() >= 1)
+			{
+				questao = null;
+			}
+			
 			
 		} catch (SQLException e) {
 			throw e;

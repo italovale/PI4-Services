@@ -6,7 +6,9 @@ public class Resposta {
 	
 	private String textoQuestao;
 	private Integer codAlternativa;
-	private Boolean boolQuestao;
+	private Boolean correta;
+	
+	private String codTipoQuestao;
 	
 	public Integer getCodGrupo() {
 		return codGrupo;
@@ -26,17 +28,24 @@ public class Resposta {
 	public void setCodAlternativa(Integer codAlternativa) {
 		this.codAlternativa = codAlternativa;
 	}
-	public Boolean getBoolQuestao() {
-		return boolQuestao;
-	}
-	public void setBoolQuestao(Boolean boolQuestao) {
-		this.boolQuestao = boolQuestao;
-	}
+
 	public String getTextoQuestao() {
 		return textoQuestao;
 	}
 	public void setTextoQuestao(String textoQuestao) {
 		this.textoQuestao = textoQuestao;
+	}
+	public Boolean getCorreta() {
+		return correta;
+	}
+	public void setCorreta(Boolean correta) {
+		this.correta = correta;
+	}
+	public String getCodTipoQuestao() {
+		return codTipoQuestao;
+	}
+	public void setCodTipoQuestao(String codTipoQuestao) {
+		this.codTipoQuestao = codTipoQuestao;
 	}
 	
 	
