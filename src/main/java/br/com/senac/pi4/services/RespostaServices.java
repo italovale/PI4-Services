@@ -55,7 +55,7 @@ public class RespostaServices {
 		try {
 			conn = DatabaseUtil.get().conn();		
 			//selecionar questao correta
-			psta = conn.prepareStatement("select 	a.codAlternativa, 	a.textoAlternativa,	a.correta,	q.codTipoQuestao from 	Alternativa	a inner join	questao q on a.codquestao = q.codquestao where 	a.codQuestao = 5");
+			psta = conn.prepareStatement("select a.codAlternativa, 	a.textoAlternativa,	a.correta,	q.codTipoQuestao from 	Alternativa	a inner join	questao q on a.codquestao = q.codquestao where 	a.codQuestao = 5");
 			psta.setInt(1, idQuestao);
 			
 			ResultSet rs = psta.executeQuery();
