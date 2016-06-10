@@ -98,22 +98,22 @@ public class RespostaServices {
 						respostaCorreta = true;
 					}
 				}
-			}
-			
-			//grava no banco a questao
-			PreparedStatement stmt = conn.prepareStatement("insert into questaoGrupo(codQuestao, codAlternativa, codGrupo, TextoResp, Correta) values(?, ?, ?, ?, ?)");
-			stmt.setInt(1, idQuestao);
-		    stmt.setInt(2, idAlternativa);
-		    stmt.setInt(3, idGrupo);
-		    stmt.setString(4, textoQuestao);
-		    stmt.setBoolean(5, respostaCorreta);
-	        rowChange = stmt.executeUpdate();
-			
-			if(rowChange > 0)
+			}else
 			{
-				gravou = true;
+				//grava no banco a questao
+				PreparedStatement stmt = conn.prepareStatement("insert into questaoGrupo(codQuestao, codAlternativa, codGrupo, TextoResp, Correta) values(?, ?, ?, ?, ?)");
+				stmt.setInt(1, idQuestao);
+			    stmt.setInt(2, idAlternativa);
+			    stmt.setInt(3, idGrupo);
+			    stmt.setString(4, textoQuestao);
+			    stmt.setBoolean(5, respostaCorreta);
+		        rowChange = stmt.executeUpdate();
+				
+				if(rowChange > 0)
+				{
+					gravou = true;
+				}
 			}
-			
 		} catch (SQLException e) {
 			throw e;
 		} catch (Exception e) {
