@@ -44,6 +44,7 @@ public class QuestaoServices {
 	public Questao selectQuestaoAtiva (int eventoId, int grupoId) throws Exception {
 		Connection conn = null;
 		PreparedStatement psta = null;
+		PreparedStatement psta2 = null;
 		Questao questao = new Questao();
 		
 		try {
@@ -81,13 +82,13 @@ public class QuestaoServices {
 			
 			
 			//verifica se a questao ja foi respondida pelo grupo
-			PreparedStatement psta2 = null;
-			psta2 = conn.prepareStatement("select * from questaoGrupo where codQuestao = ? and codGrupo = ?");
+			
+			psta2 = conn.prepareStatement("select COUNT(*) as respondeu from questaoGrupo where codQuestao = ? and codGrupo = ?");
 			psta2.setInt(1, questao.getCodQuestao());
 			psta2.setInt(2, grupoId);
 			
-			rs = psta2.executeQuery();
-			if(rs.getRow() >= 1)
+			ResultSet rs2 = psta2.executeQuery();
+			if(rs2.next() && rs2.getInt("respondeu") >= 1)
 			{
 				questao = null;
 			}
@@ -100,6 +101,8 @@ public class QuestaoServices {
 		} finally {
 			if (psta != null)
 				psta.close();
+			if (psta2 != null)
+				psta2.close();
 			if (conn != null)
 				conn.close ();
 		}

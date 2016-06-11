@@ -76,5 +76,45 @@ public class ParticipanteServices {
 		return usuario;
 	}
 	
+	@GET
+	@Path("grupo/{idParticipante}/{idEvento}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response grupo(@PathParam("idParticipante") Integer idParticipante, @PathParam("idEvento") Integer idEvento) {
+		int idGrupo = 0;
+		try {
+			Connection conn = null;
+			PreparedStatement psta = null;
+			try {
+				conn = DatabaseUtil.get().conn();		
+				psta = conn.prepareStatement("select g.codgrupo from participantegrupo pg inner join grupo g on pg.codgrupo = g.codgrupo where	g.codevento = ? and pg.codparticipante = ?");
+				psta.setInt(1, idEvento);
+				psta.setInt(2, idParticipante);
+				
+				//
+				ResultSet rs = psta.executeQuery();
+				
+				while (rs.next()) {
+					idGrupo = rs.getInt("codGrupo");
+				}
+			} catch (SQLException e) {
+				throw e;
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				if (psta != null)
+					psta.close();
+				if (conn != null)
+					conn.close ();
+			}
+		} catch (Exception e) {
+			return Response.status(500).entity(null).build();	
+		}
+		if (idGrupo == 0)
+			return Response.status(404).entity(null).build();
+		
+		
+		return Response.status(200).entity(idGrupo).build();
+	}
+	
 	
  }

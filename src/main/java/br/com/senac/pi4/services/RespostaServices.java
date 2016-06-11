@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -74,7 +73,7 @@ public class RespostaServices {
 			//alternativa
 			if(alternativas.get(0).getCodTipoQuestao().equalsIgnoreCase("A")){
 				for (Resposta item : alternativas) {
-					if(item.getCodAlternativa() == idAlternativa)
+					if(item.getCodAlternativa() == idAlternativa && item.getCorreta())
 					{
 						respostaCorreta = true;
 					}
@@ -98,6 +97,7 @@ public class RespostaServices {
 					if(item.getCorreta() ==  Boolean.parseBoolean(textoQuestao))
 					{
 						respostaCorreta = true;
+						idAlternativa = item.getCodAlternativa();
 					}
 				}
 			}
