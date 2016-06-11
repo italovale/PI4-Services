@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -24,7 +25,7 @@ import br.com.senac.pi4.util.DatabaseUtil;
 @Path("/resposta/{idGrupo}/{idQuestao}/{idAlternativa}/{textoQuestao}")
 public class RespostaServices {
 	
-	@POST
+	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response login(@PathParam("idGrupo") Integer idGrupo, @PathParam("idQuestao") Integer idQuestao, @PathParam("idAlternativa") Integer idAlternativa, @PathParam("textoQuestao") String textoQuestao) {
 		Boolean status = null;
@@ -54,7 +55,7 @@ public class RespostaServices {
 		try {
 			conn = DatabaseUtil.get().conn();		
 			//selecionar questao correta
-			psta = conn.prepareStatement("select a.codAlternativa, 	a.textoAlternativa,	a.correta,	q.codTipoQuestao from 	Alternativa	a inner join	questao q on a.codquestao = q.codquestao where 	a.codQuestao = 5");
+			psta = conn.prepareStatement("select a.codAlternativa, 	a.textoAlternativa,	a.correta,	q.codTipoQuestao from 	Alternativa	a inner join	questao q on a.codquestao = q.codquestao where 	a.codQuestao = ?");
 			psta.setInt(1, idQuestao);
 			
 			ResultSet rs = psta.executeQuery();
@@ -86,6 +87,7 @@ public class RespostaServices {
 					if(item.getTextoQuestao().equalsIgnoreCase(textoQuestao))
 					{
 						respostaCorreta = true;
+						idAlternativa = item.getCodAlternativa();
 					}
 				}
 			}
@@ -98,22 +100,22 @@ public class RespostaServices {
 						respostaCorreta = true;
 					}
 				}
-			}else
-			{
-				//grava no banco a questao
-				PreparedStatement stmt = conn.prepareStatement("insert into questaoGrupo(codQuestao, codAlternativa, codGrupo, TextoResp, Correta) values(?, ?, ?, ?, ?)");
-				stmt.setInt(1, idQuestao);
-			    stmt.setInt(2, idAlternativa);
-			    stmt.setInt(3, idGrupo);
-			    stmt.setString(4, textoQuestao);
-			    stmt.setBoolean(5, respostaCorreta);
-		        rowChange = stmt.executeUpdate();
-				
-				if(rowChange > 0)
-				{
-					gravou = true;
-				}
 			}
+			
+			//grava no banco a questao
+			PreparedStatement stmt = conn.prepareStatement("insert into questaoGrupo(codQuestao, codAlternativa, codGrupo, TextoResp, Correta) values(?, ?, ?, ?, ?)");
+			stmt.setInt(1, idQuestao);
+		    stmt.setInt(2, idAlternativa);
+		    stmt.setInt(3, idGrupo);
+		    stmt.setString(4, textoQuestao);
+		    stmt.setBoolean(5, respostaCorreta);
+	        rowChange = stmt.executeUpdate();
+			
+			if(rowChange > 0)
+			{
+				gravou = true;
+			}
+			
 		} catch (SQLException e) {
 			throw e;
 		} catch (Exception e) {
