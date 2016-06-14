@@ -47,7 +47,7 @@ public class ResultadoServices {
 		PreparedStatement psta = null;
 		try {
 			conn = DatabaseUtil.get().conn();		
-			psta = conn.prepareStatement("select g.nmGrupo, sum(convert(int, qg.correta)) as pontosGrupo, (select	count(0) from QuestaoEvento where codEvento = ?) as pontosTotal from Evento e inner join Grupo g on (e.codEvento = g.codEvento) inner join QuestaoGrupo qg on (qg.codGrupo = g.codGrupo) where e.codEvento = ? group by g.nmGrupo");
+			psta = conn.prepareStatement("select g.nmGrupo, sum(convert(int, qg.correta)) as pontosGrupo, (select	count(0) from QuestaoEvento where codEvento = ?) as pontosTotal from Evento e inner join Grupo g on (e.codEvento = g.codEvento) left join QuestaoGrupo qg on (qg.codGrupo = g.codGrupo) where e.codEvento = ? group by g.nmGrupo");
 			psta.setInt(1, idEvento);
 			psta.setInt(2, idEvento);
 

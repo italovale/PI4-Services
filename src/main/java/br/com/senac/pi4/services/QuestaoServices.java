@@ -51,7 +51,7 @@ public class QuestaoServices {
 			conn = DatabaseUtil.get().conn();
 
 			//psta = conn.prepareStatement("select q.codQuestao, q.textoQuestao, q.codTipoQuestao, qe.tempo, a.codAlternativa, a.textoAlternativa from questao q inner join QuestaoEvento qe on q.codQuestao = qe.codQuestao left join	Alternativa a on q.codQuestao = a.codQuestao where	ativo = 1 and codstatus = 'A' and codevento = ?");
-			psta = conn.prepareStatement("select q.codQuestao, q.textoQuestao, q.codTipoQuestao, qe.tempo, a.codAlternativa, a.textoAlternativa from	questao q inner join QuestaoEvento qe on q.codQuestao = qe.codQuestao left join	Alternativa a on q.codQuestao = a.codQuestao where codstatus = 'A' and codevento = ?");
+			psta = conn.prepareStatement("select q.codQuestao, q.textoQuestao, q.codTipoQuestao, qe.tempo, a.codAlternativa, a.textoAlternativa from	questao q inner join QuestaoEvento qe on q.codQuestao = qe.codQuestao left join	Alternativa a on q.codQuestao = a.codQuestao where codstatus = 'E' and codevento = ?");
 			psta.setInt(1, eventoId);
 			
 			
