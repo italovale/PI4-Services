@@ -47,6 +47,7 @@ public class QuestaoServices {
 		PreparedStatement psta2 = null;
 		Questao questao = new Questao();
 		
+		
 		try {
 			conn = DatabaseUtil.get().conn();
 
@@ -60,7 +61,6 @@ public class QuestaoServices {
 			List<Alternativa> a = new ArrayList<Alternativa>();
 			
 			while (rs.next()) {
-				
 				questao.setCodQuestao(rs.getInt("codQuestao"));
 				questao.setTextoQuestao(rs.getString("textoQuestao"));
 				questao.setCodTipoQuestao(rs.getString("codTipoQuestao"));
@@ -72,7 +72,6 @@ public class QuestaoServices {
 					alter.setTextoAlternativa(rs.getString("textoAlternativa"));
 					a.add(alter);
 				}
-				
 			}
 			
 			if(a != null)
