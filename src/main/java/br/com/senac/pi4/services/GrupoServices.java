@@ -17,7 +17,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import br.com.senac.pi4.entity.ParticipanteGrupo;
-import br.com.senac.pi4.entity.Resposta;
 import br.com.senac.pi4.util.DatabaseUtil;
 
 import com.google.gson.Gson;
