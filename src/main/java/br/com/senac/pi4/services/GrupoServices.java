@@ -144,7 +144,7 @@ public class GrupoServices {
 	@GET
 	@Path("/{param}/{param1}/{param2}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response setGrupo(@PathParam("param") Integer idEvento, @PathParam("param1") Integer idParticiapante, @PathParam("param2") String nmGrupo) {
+	public Response createGrupo(@PathParam("param") Integer idEvento, @PathParam("param1") Integer idParticiapante, @PathParam("param2") String nmGrupo) {
 		Boolean result = false;
 		
 		try {
