@@ -30,10 +30,10 @@ public class EventoServices {
 		try {
 			ev = selectEvento(eventoId);
 		} catch (Exception e) {
-			return Response.status(500).entity(null).build();	
+			return Response.status(200).entity(false).build();	
 		}
 		if (ev == null)
-			return Response.status(404).entity(null).build();
+			return Response.status(200).entity(false).build();
 		
 		
 		return Response.status(200).entity(ev).build();

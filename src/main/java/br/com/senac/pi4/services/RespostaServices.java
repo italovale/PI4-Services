@@ -32,10 +32,10 @@ public class RespostaServices {
 		try {
 			status = gravarResposta(idGrupo, idQuestao, idAlternativa, textoQuestao);
 		} catch (Exception e) {
-			return Response.status(500).entity(null).build();	
+			return Response.status(200).entity(false).build();	
 		}
 		if (status == null)
-			return Response.status(404).entity(null).build();
+			return Response.status(200).entity(false).build();
 		
 		
 		return Response.status(200).entity(status).build();

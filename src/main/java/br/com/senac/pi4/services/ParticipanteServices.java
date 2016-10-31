@@ -30,10 +30,10 @@ public class ParticipanteServices {
 		try {
 			usuarioLogado = Logar(email, senha);
 		} catch (Exception e) {
-			return Response.status(500).entity(null).build();	
+			return Response.status(200).entity(false).build();	
 		}
 		if (usuarioLogado == null)
-			return Response.status(404).entity(null).build();
+			return Response.status(200).entity(false).build();
 		
 		
 		return Response.status(200).entity(usuarioLogado).build();
@@ -107,10 +107,10 @@ public class ParticipanteServices {
 					conn.close ();
 			}
 		} catch (Exception e) {
-			return Response.status(500).entity(null).build();	
+			return Response.status(200).entity(false).build();	
 		}
 		if (idGrupo == 0)
-			return Response.status(404).entity(null).build();
+			return Response.status(200).entity(false).build();
 		
 		
 		return Response.status(200).entity(idGrupo).build();

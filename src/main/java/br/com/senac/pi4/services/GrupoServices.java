@@ -74,10 +74,10 @@ public class GrupoServices {
 		try {
 			listPg = selectUsuario(eventoId);
 		} catch (Exception e) {
-			return Response.status(500).entity(null).build();	
+			return Response.status(200).entity(false).build();	
 		}
 		if (listPg == null)
-			return Response.status(404).entity(null).build();
+			return Response.status(200).entity(false).build();
 		
 		
 		return Response.status(200).entity(listPg).build();
@@ -130,10 +130,10 @@ public class GrupoServices {
 			}
 			
 		} catch (Exception e) {
-			return Response.status(500).entity(null).build();	
+			return Response.status(200).entity(false).build();	
 		}
 		if (!result)
-			return Response.status(404).entity(null).build();
+			return Response.status(200).entity(false).build();
 		
 		
 		return Response.status(200).entity(result).build();
@@ -175,10 +175,10 @@ public class GrupoServices {
 			}
 			
 		} catch (Exception e) {
-			return Response.status(500).entity(null).build();	
+			return Response.status(200).entity(false).build();	
 		}
 		if (!result)
-			return Response.status(404).entity(null).build();
+			return Response.status(200).entity(false).build();
 		
 		
 		return Response.status(200).entity(result).build();

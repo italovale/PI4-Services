@@ -32,10 +32,10 @@ public class QuestaoServices {
 		try {
 			questao = selectQuestaoAtiva(eventoId, grupoId);
 		} catch (Exception e) {
-			return Response.status(500).entity(null).build();	
+			return Response.status(200).entity(false).build();	
 		}
 		if (questao == null)
-			return Response.status(404).entity(null).build();
+			return Response.status(200).entity(false).build();
 		
 		
 		return Response.status(200).entity(questao).build();
