@@ -23,12 +23,12 @@ public class EventoServices {
 	@GET
 	@Path("/{param}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getEvento(@PathParam("param") Integer eventoId) {
+	public Response getEvento(@PathParam("param") String identificador) {
 		
 		Evento ev = new Evento();
 	
 		try {
-			ev = selectEvento(eventoId);
+			ev = selectEvento(identificador);
 		} catch (Exception e) {
 			return Response.status(200).entity(false).build();	
 		}
@@ -39,15 +39,15 @@ public class EventoServices {
 		return Response.status(200).entity(ev).build();
 	}
 	
-	public Evento selectEvento (int eventoId) throws Exception {
+	public Evento selectEvento (String identificador) throws Exception {
 		Connection conn = null;
 		PreparedStatement psta = null;
 		Evento ev = new Evento();
 		
 		try {
 			conn = DatabaseUtil.get().conn();		
-			psta = conn.prepareStatement("select * from Evento where codEvento = ?");
-			psta.setInt(1, eventoId);
+			psta = conn.prepareStatement("select * from Evento where identificador = ?");
+			psta.setString(1, identificador);
 			
 			
 			//
