@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import br.com.senac.pi4.entity.Participante;
+import br.com.senac.pi4.entity.ParticipanteGrupo;
 import br.com.senac.pi4.util.DatabaseUtil;
 
 
@@ -80,13 +82,14 @@ public class ParticipanteServices {
 	@Path("grupo/{idParticipante}/{idEvento}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response grupo(@PathParam("idParticipante") Integer idParticipante, @PathParam("idEvento") Integer idEvento) {
-		int idGrupo = 0;
+			
+		ParticipanteGrupo pg = new ParticipanteGrupo();
 		try {
 			Connection conn = null;
 			PreparedStatement psta = null;
 			try {
 				conn = DatabaseUtil.get().conn();		
-				psta = conn.prepareStatement("select g.codgrupo from participantegrupo pg inner join grupo g on pg.codgrupo = g.codgrupo where	g.codevento = ? and pg.codparticipante = ?");
+				psta = conn.prepareStatement("select g.codgrupo, g.codLider from participantegrupo pg inner join grupo g on pg.codgrupo = g.codgrupo where	g.codevento = ? and pg.codparticipante = ?");
 				psta.setInt(1, idEvento);
 				psta.setInt(2, idParticipante);
 				
@@ -94,7 +97,8 @@ public class ParticipanteServices {
 				ResultSet rs = psta.executeQuery();
 				
 				while (rs.next()) {
-					idGrupo = rs.getInt("codGrupo");
+					pg.setCodGrupo(rs.getInt("codGrupo"));
+					pg.setCodLider(rs.getInt("codLider"));
 				}
 			} catch (SQLException e) {
 				throw e;
@@ -109,11 +113,11 @@ public class ParticipanteServices {
 		} catch (Exception e) {
 			return Response.status(200).entity(false).build();	
 		}
-		if (idGrupo == 0)
+		if (pg.getCodGrupo() == null)
 			return Response.status(200).entity(false).build();
 		
 		
-		return Response.status(200).entity(idGrupo).build();
+		return Response.status(200).entity(pg).build();
 	}
 	
 	
