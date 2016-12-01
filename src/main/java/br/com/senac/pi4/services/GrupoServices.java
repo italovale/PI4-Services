@@ -186,5 +186,49 @@ public class GrupoServices {
 	}
 	
 	
+	@GET
+	@Path("/fechar/{param}/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response createGrupo(@PathParam("param") Integer idGrupo) {
+		Boolean result = false;
+		
+		try {
+			
+			int rowChange = 0;
+			Connection conn = null;
+		
+			try {
+				conn = DatabaseUtil.get().conn();		
+				
+				PreparedStatement stmt = conn.prepareStatement("update grupo set finalizado = 1 where codGrupo = ?");
+				stmt.setInt(1, idGrupo);
+				rowChange = stmt.executeUpdate();
+				
+				if(rowChange > 0)
+				{
+					result = true;
+				}
+				
+			} catch (SQLException e) {
+				throw e;
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				if (conn != null)
+					conn.close ();
+			}
+			
+		} catch (Exception e) {
+			return Response.status(200).entity(false).build();	
+		}
+		if (!result)
+			return Response.status(200).entity(false).build();
+		
+		
+		return Response.status(200).entity(result).build();
+ 
+	}
+	
+	
  
 }
